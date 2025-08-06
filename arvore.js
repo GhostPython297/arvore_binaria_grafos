@@ -1,3 +1,5 @@
+// === dá pra rodar isso com "node arvore.js"
+
 // 1. ESTRUTURA BÁSICA DE ÁRVORE BINÁRIA
 class NoArvore {
     constructor(valor) {
