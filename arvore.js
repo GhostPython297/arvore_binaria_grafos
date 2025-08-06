@@ -94,7 +94,7 @@ function dfsPreOrdemIterativo(raiz) {
     return resultado;
 }
 
-// 3. VERIFICAR SE UM VALOR EXISTS NA ÁRVORE USANDO DFS
+// 3. VERIFICAR SE UM VALOR EXISTE NA ÁRVORE USANDO DFS
 function buscarValorDFS(no, valorProcurado) {
     // Caso base: nó é null
     if (no === null) {
@@ -108,6 +108,7 @@ function buscarValorDFS(no, valorProcurado) {
     }
     
     // Busca recursivamente nas subárvores
+    // ao menos uma das duas verificações deve retornar true
     return buscarValorDFS(no.esquerda, valorProcurado) || 
            buscarValorDFS(no.direita, valorProcurado);
 }
@@ -123,6 +124,11 @@ function buscarValorBST(no, valorProcurado) {
     }
     
     // Em uma BST, podemos otimizar a busca
+    // a diferença é de uma verificação usando if
+    // no começo, em comparação com a outra função
+    // que procura nos dois cenários independente do resultado
+    // pois acredito que o || no js não é operador de
+    // curto-circuito
     if (valorProcurado < no.valor) {
         return buscarValorBST(no.esquerda, valorProcurado);
     } else {
@@ -142,6 +148,9 @@ function calcularAltura(no) {
     const alturaDireita = calcularAltura(no.direita);
     
     // Altura = 1 + maior altura entre as subárvores
+    // soma +1 pra incluir o nó atual da árvore
+    // se o nó for null, a altura é -1, então
+    // a altura da árvore é 0
     const alturaAtual = 1 + Math.max(alturaEsquerda, alturaDireita);
     
     console.log(`Nó ${no.valor} - Altura: ${alturaAtual}`);
@@ -164,6 +173,7 @@ function contarNos(no) {
 
 // 6. VERIFICAR SE ÁRVORE É SIMÉTRICA
 function ehSimetrica(raiz) {
+    // se a raiz for null, a árvore é simétrica (não há subárvores)
     if (raiz === null) {
         return true;
     }
@@ -190,6 +200,7 @@ function verificarSimetria(noEsquerdo, noDireito) {
     // Verifica simetria cruzada:
     // esquerda do nó esquerdo com direita do nó direito
     // direita do nó esquerdo com esquerda do nó direito
+    // os dois retornos devem ser true para ser simétrico
     return verificarSimetria(noEsquerdo.esquerda, noDireito.direita) &&
            verificarSimetria(noEsquerdo.direita, noDireito.esquerda);
 }
@@ -228,6 +239,7 @@ function encontrarMinimoArvoreComum(no) {
 
 console.log("=== CRIANDO ÁRVORE DE EXEMPLO ===");
 const arvore = new ArvoreBinaria();
+
 // Inserindo valores: 50, 30, 70, 20, 40, 60, 80
 [50, 30, 70, 20, 40, 60, 80].forEach(valor => arvore.inserir(valor));
 
@@ -255,6 +267,7 @@ const totalNos = contarNos(arvore.raiz);
 console.log("Total de nós:", totalNos);
 
 console.log("\n=== 6. VERIFICAR SIMETRIA ===");
+
 // Criando uma árvore simétrica para teste
 const raizSimetrica = new NoArvore(1);
 raizSimetrica.esquerda = new NoArvore(2);
