@@ -17,7 +17,13 @@ class ArvoreBinaria {
         this.raiz = this._inserirRecursivo(this.raiz, valor);
     }
     
+    // hoisting pq sim
     _inserirRecursivo(no, valor) {
+
+        // isso poderia ser um switch case
+        // ia ficar menos feio
+        // não teve a veriricação de se o valor foi igual ao valor
+        // do nó
         if (no === null) {
             return new NoArvore(valor);
         }
@@ -33,8 +39,12 @@ class ArvoreBinaria {
 }
 
 // 2. ALGORITMO DFS PRÉ-ORDEM
+// recebe uma array, que na verdade é um objeto
+// mas chamamos de array pq sim
 function dfsPreOrdem(no, resultado = []) {
     // Caso base: se o nó é null, retorna
+    // usando estritamente igual na condicional para
+    // garantir que essa benção não dê problema
     if (no === null) {
         return resultado;
     }
@@ -49,11 +59,17 @@ function dfsPreOrdem(no, resultado = []) {
     // 3. Percorre subárvore direita
     dfsPreOrdem(no.direita, resultado);
     
+    // conforme o valor vai sendo processado nas linhas
+    // anteriores, ele muda, então esse retorno é
+    // diferente do retorno que está dentro do if
+    // por mais estranho que isso pareça
     return resultado;
 }
 
 // Versão iterativa do DFS pré-ordem usando pilha
 function dfsPreOrdemIterativo(raiz) {
+    // eu chamo esse retorno de objeto vazio do tipo array
+    // não sei se é o correto
     if (raiz === null) return [];
     
     const resultado = [];

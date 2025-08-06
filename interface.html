@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste - Árvore Binária e DFS</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .output {
+            background-color: #2d2d30;
+            border: 1px solid #3e3e42;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            white-space: pre-line;
+            font-size: 14px;
+        }
+        .section {
+            margin: 30px 0;
+        }
+        h2 {
+            color: #569cd6;
+            border-bottom: 2px solid #569cd6;
+            padding-bottom: 10px;
+        }
+        .test-button {
+            background-color: #0e639c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .test-button:hover {
+            background-color: #1177bb;
+        }
+        .success {
+            color: #4ec9b0;
+        }
+        .error {
+            color: #f44747;
+        }
+        .info {
+            color: #dcdcaa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌳 Teste da Árvore Binária e Algoritmos DFS</h1>
+        
+        <div class="section">
+            <h2>Controles de Teste</h2>
+            <button class="test-button" onclick="executarTodosTestes()">🔄 Executar Todos os Testes</button>
+            <button class="test-button" onclick="testarEstrutura()">🏗️ Testar Estrutura</button>
+            <button class="test-button" onclick="testarDFS()">🔍 Testar DFS</button>
+            <button class="test-button" onclick="testarBusca()">🎯 Testar Busca</button>
+            <button class="test-button" onclick="testarAltura()">📏 Testar Altura</button>
+            <button class="test-button" onclick="testarSimetria()">⚖️ Testar Simetria</button>
+            <button class="test-button" onclick="limparOutput()">🧹 Limpar</button>
+        </div>
+
+        <div id="output" class="output">
+            👋 Clique nos botões acima para testar os algoritmos!
+        </div>
+    </div>
+
+    <script>
+        // === CÓDIGO DA ÁRVORE BINÁRIA ===
+        class NoArvore {
+            constructor(valor) {
+                this.valor = valor;
+                this.esquerda = null;
+                this.direita = null;
+            }
+        }
+
+        class ArvoreBinaria {
+            constructor() {
+                this.raiz = null;
+            }
+            
+            inserir(valor) {
+                this.raiz = this._inserirRecursivo(this.raiz, valor);
+            }
+            
+            _inserirRecursivo(no, valor) {
+                if (no === null) {
+                    return new NoArvore(valor);
+                }
+                
+                if (valor < no.valor) {
+                    no.esquerda = this._inserirRecursivo(no.esquerda, valor);
+                } else if (valor > no.valor) {
+                    no.direita = this._inserirRecursivo(no.direita, valor);
+                }
+                
+                return no;
+            }
+        }
+
+        // === ALGORITMOS DFS ===
+        function dfsPreOrdem(no, resultado = []) {
+            if (no === null) {
+                return resultado;
+            }
+            
+            resultado.push(no.valor);
+            dfsPreOrdem(no.esquerda, resultado);
+            dfsPreOrdem(no.direita, resultado);
+            
+            return resultado;
+        }
+
+        function dfsPreOrdemIterativo(raiz) {
+            if (raiz === null) return [];
+            
+            const resultado = [];
+            const pilha = [raiz];
+            
+            while (pilha.length > 0) {
+                const no = pilha.pop();
+                resultado.push(no.valor);
+                
+                if (no.direita !== null) {
+                    pilha.push(no.direita);
+                }
+                if (no.esquerda !== null) {
+                    pilha.push(no.esquerda);
+                }
+            }
+            
+            return resultado;
+        }
+
+        function buscarValorDFS(no, valorProcurado) {
+            if (no === null) {
+                return false;
+            }
+            
+            if (no.valor === valorProcurado) {
+                return true;
+            }
+            
+            return buscarValorDFS(no.esquerda, valorProcurado) || 
+                   buscarValorDFS(no.direita, valorProcurado);
+        }
+
+        function calcularAltura(no) {
+            if (no === null) {
+                return -1;
+            }
+            
+            const alturaEsquerda = calcularAltura(no.esquerda);
+            const alturaDireita = calcularAltura(no.direita);
+            
+            return 1 + Math.max(alturaEsquerda, alturaDireita);
+        }
+
+        function contarNos(no) {
+            if (no === null) {
+                return 0;
+            }
+            
+            return 1 + contarNos(no.esquerda) + contarNos(no.direita);
+        }
+
+        function ehSimetrica(raiz) {
+            if (raiz === null) {
+                return true;
+            }
+            
+            return verificarSimetria(raiz.esquerda, raiz.direita);
+        }
+
+        function verificarSimetria(noEsquerdo, noDireito) {
+            if (noEsquerdo === null && noDireito === null) {
+                return true;
+            }
+            
+            if (noEsquerdo === null || noDireito === null) {
+                return false;
+            }
+            
+            if (noEsquerdo.valor !== noDireito.valor) {
+                return false;
+            }
+            
+            return verificarSimetria(noEsquerdo.esquerda, noDireito.direita) &&
+                   verificarSimetria(noEsquerdo.direita, noDireito.esquerda);
+        }
+
+        function encontrarMinimoBST(no) {
+            if (no === null) {
+                return null;
+            }
+            
+            if (no.esquerda === null) {
+                return no.valor;
+            }
+            
+            return encontrarMinimoBST(no.esquerda);
+        }
+
+        // === FUNÇÕES DE TESTE ===
+        const output = document.getElementById('output');
+
+        function log(mensagem, tipo = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const classes = {
+                'success': 'success',
+                'error': 'error',
+                'info': 'info'
+            };
+            
+            output.innerHTML += `<span class="${classes[tipo]}">[${timestamp}] ${mensagem}</span>\n`;
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function limparOutput() {
+            output.innerHTML = '🧹 Output limpo! Pronto para novos testes.\n\n';
+        }
+
+        function criarArvoreExemplo() {
+            const arvore = new ArvoreBinaria();
+            [50, 30, 70, 20, 40, 60, 80].forEach(valor => arvore.inserir(valor));
+            return arvore;
+        }
+
+        function criarArvoreSimetrica() {
+            const raiz = new NoArvore(1);
+            raiz.esquerda = new NoArvore(2);
+            raiz.direita = new NoArvore(2);
+            raiz.esquerda.esquerda = new NoArvore(3);
+            raiz.esquerda.direita = new NoArvore(4);
+            raiz.direita.esquerda = new NoArvore(4);
+            raiz.direita.direita = new NoArvore(3);
+            return raiz;
+        }
+
+        function testarEstrutura() {
+            log('=== TESTANDO ESTRUTURA DA ÁRVORE ===', 'info');
+            
+            const arvore = criarArvoreExemplo();
+            
+            if (arvore.raiz && arvore.raiz.valor === 50) {
+                log('✅ Raiz criada corretamente: ' + arvore.raiz.valor, 'success');
+            } else {
+                log('❌ Erro na criação da raiz', 'error');
+            }
+            
+            if (arvore.raiz.esquerda && arvore.raiz.esquerda.valor === 30) {
+                log('✅ Filho esquerdo da raiz: ' + arvore.raiz.esquerda.valor, 'success');
+            }
+            
+            if (arvore.raiz.direita && arvore.raiz.direita.valor === 70) {
+                log('✅ Filho direito da raiz: ' + arvore.raiz.direita.valor, 'success');
+            }
+            
+            log('✅ Estrutura BST criada com sucesso!\n', 'success');
+        }
+
+        function testarDFS() {
+            log('=== TESTANDO ALGORITMOS DFS ===', 'info');
+            
+            const arvore = criarArvoreExemplo();
+            
+            const resultadoRecursivo = dfsPreOrdem(arvore.raiz);
+            const resultadoIterativo = dfsPreOrdemIterativo(arvore.raiz);
+            
+            log(`DFS Pré-ordem (Recursivo): [${resultadoRecursivo.join(', ')}]`);
+            log(`DFS Pré-ordem (Iterativo): [${resultadoIterativo.join(', ')}]`);
+            
+            // Verifica se os resultados são iguais
+            const saoIguais = JSON.stringify(resultadoRecursivo) === JSON.stringify(resultadoIterativo);
+            
+            if (saoIguais) {
+                log('✅ Ambas implementações DFS retornam o mesmo resultado!', 'success');
+            } else {
+                log('❌ Implementações DFS divergem!', 'error');
+            }
+            
+            // Teste específico da ordem esperada
+            const ordemEsperada = [50, 30, 20, 40, 70, 60, 80];
+            const ordemCorreta = JSON.stringify(resultadoRecursivo) === JSON.stringify(ordemEsperada);
+            
+            if (ordemCorreta) {
+                log('✅ Ordem DFS pré-ordem está correta!', 'success');
+            } else {
+                log(`❌ Ordem incorreta! Esperado: [${ordemEsperada.join(', ')}]`, 'error');
+            }
+            
+            log('');
+        }
+
+        function testarBusca() {
+            log('=== TESTANDO BUSCA DE VALORES ===', 'info');
+            
+            const arvore = criarArvoreExemplo();
+            
+            // Testes de busca
+            const testes = [
+                { valor: 40, existe: true },
+                { valor: 80, existe: true },
+                { valor: 90, existe: false },
+                { valor: 25, existe: false }
+            ];
+            
+            testes.forEach(teste => {
+                const resultado = buscarValorDFS(arvore.raiz, teste.valor);
+                const status = resultado === teste.existe ? '✅' : '❌';
+                const esperado = teste.existe ? 'encontrado' : 'não encontrado';
+                
+                log(`${status} Buscar ${teste.valor}: ${resultado ? 'encontrado' : 'não encontrado'} (esperado: ${esperado})`);
+            });
+            
+            log('');
+        }
+
+        function testarAltura() {
+            log('=== TESTANDO CÁLCULO DE ALTURA ===', 'info');
+            
+            const arvore = criarArvoreExemplo();
+            const altura = calcularAltura(arvore.raiz);
+            const totalNos = contarNos(arvore.raiz);
+            const minimo = encontrarMinimoBST(arvore.raiz);
+            
+            log(`📏 Altura da árvore: ${altura}`);
+            log(`📊 Total de nós: ${totalNos}`);
+            log(`🔢 Valor mínimo: ${minimo}`);
+            
+            // Verificações
+            if (altura >= 0) {
+                log('✅ Altura calculada com sucesso!', 'success');
+            }
+            
+            if (totalNos === 7) {
+                log('✅ Contagem de nós correta!', 'success');
+            } else {
+                log(`❌ Contagem incorreta! Esperado: 7, obtido: ${totalNos}`, 'error');
+            }
+            
+            if (minimo === 20) {
+                log('✅ Valor mínimo correto!', 'success');
+            } else {
+                log(`❌ Valor mínimo incorreto! Esperado: 20, obtido: ${minimo}`, 'error');
+            }
+            
+            log('');
+        }
+
+        function testarSimetria() {
+            log('=== TESTANDO VERIFICAÇÃO DE SIMETRIA ===', 'info');
+            
+            const arvore = criarArvoreExemplo();
+            const arvoreSimetrica = criarArvoreSimetrica();
+            
+            const bstSimetrica = ehSimetrica(arvore.raiz);
+            const arvoreTesteSimetrica = ehSimetrica(arvoreSimetrica);
+            
+            log(`🌳 BST (50,30,70...) é simétrica? ${bstSimetrica ? 'Sim' : 'Não'}`);
+            log(`⚖️ Árvore teste (1,2,2,3,4,4,3) é simétrica? ${arvoreTesteSimetrica ? 'Sim' : 'Não'}`);
+            
+            if (!bstSimetrica) {
+                log('✅ Correto! BST não é simétrica.', 'success');
+            } else {
+                log('❌ Erro! BST não deveria ser simétrica.', 'error');
+            }
+            
+            if (arvoreTesteSimetrica) {
+                log('✅ Correto! Árvore teste é simétrica.', 'success');
+            } else {
+                log('❌ Erro! Árvore teste deveria ser simétrica.', 'error');
+            }
+            
+            log('');
+        }
+
+        function executarTodosTestes() {
+            limparOutput();
+            log('🚀 INICIANDO BATERIA COMPLETA DE TESTES\n', 'info');
+            
+            try {
+                testarEstrutura();
+                testarDFS();
+                testarBusca();
+                testarAltura();
+                testarSimetria();
+                
+                log('🎉 TODOS OS TESTES CONCLUÍDOS COM SUCESSO!', 'success');
+            } catch (error) {
+                log(`❌ Erro durante os testes: ${error.message}`, 'error');
+            }
+        }
+
+        // Executa um teste inicial quando a página carrega
+        window.onload = function() {
+            log('👋 Página carregada! Clique nos botões para testar os algoritmos.\n');
+        };
+    </script>
+</body>
+</html>
